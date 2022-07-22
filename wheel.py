@@ -1,28 +1,24 @@
 import cadquery as cq
-from types import SimpleNamespace as ns
 
-INCH = 25.4
-ORING = ns(id=15 / 16 * INCH, od=(1 + 3 / 16) * INCH, thickness=1 / 8 * INCH)
-SHAFT = ns(length=0.5 * INCH, diameter=1 / 4 * INCH)
-TOLERANCE = 0.35
-ORING.radius = (ORING.id + ORING.od) / 4
-SHAFT.radius = SHAFT.diameter / 2
+from constants import ORING, SHAFT, TOLERANCE
 
-wheel = cq.Workplane().cylinder(height=ORING.thickness + 2, radius=ORING.radius)
+wheel = cq.Workplane().cylinder(height=ORING.thickness + 6, radius=ORING.radius)
 
 wheel = (
     wheel.faces(">Z")
-    .circle(SHAFT.radius + 4)
-    .circle(SHAFT.radius + TOLERANCE)
-    .extrude(SHAFT.length - 2)
+    .circle(SHAFT.radius + 6)
+    .circle(SHAFT.radius)
+    .extrude(SHAFT.length / 2 - 2)
 )
 
 wheel = wheel.edges(">>Z[2]").edges(cq.selectors.RadiusNthSelector(1)).fillet(4)
+wheel = wheel.edges("<<Z").chamfer(1)
+wheel = wheel.edges(">>Z").chamfer(1)
 
 ring = (
     cq.Workplane("YZ")
-    .move(ORING.radius)
-    .circle(ORING.thickness / 2 + TOLERANCE)
+    .move(ORING.radius + TOLERANCE)
+    .circle(ORING.thickness / 2)
     .revolve()
 )
 wheel = wheel.cut(ring)

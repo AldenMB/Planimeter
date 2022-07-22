@@ -1,16 +1,14 @@
 import cadquery as cq
 
-INCH = 25.4
-NUT = 0.5 * INCH
-SHAFT = 1 * INCH
+from constants import INCH, NUT, SHAFT
 
 driver = (
     cq.Workplane()
     .sketch()
-    .circle(NUT / 2 * 1.35)
+    .circle(NUT / 2 * 1.6)
     .regularPolygon(r=NUT / 3**0.5, n=6, mode="s")
     .finalize()
-    .extrude(SHAFT)
+    .extrude(SHAFT.length)
 )
 
 driver = (

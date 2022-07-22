@@ -1,11 +1,6 @@
 import cadquery as cq
-from types import SimpleNamespace as ns
 
-INCH = 25.4
-ROD = ns(width=INCH / 4, clearance=INCH / 16)
-SCREW = ns(head_diameter=11, length=20, clearance_diameter=4.25, grip_diameter=2.75)
-M4 = ns(thread_diameter=3.3)
-WALL = 4
+from constants import M4, ROD, SCREW, WALL
 
 shoulder = (
     cq.Workplane()
@@ -44,6 +39,8 @@ shoulder = (
     .hole(M4.thread_diameter, depth=2 * WALL)
 )
 
+shoulder = shoulder.faces(">Z").wires().toPending().extrude(4)
+
 shoulder = shoulder.edges("%line").fillet(1)
 
-cq.exporters.export(shoulder, "shoulder.stl")
+# cq.exporters.export(shoulder, "shoulder.stl")
